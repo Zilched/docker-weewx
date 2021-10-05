@@ -1,0 +1,13 @@
+#!/bin/bash
+inotifywait -m /home/weewx/tmp/north -e close_write |
+    while read dir action file; do
+        timestamp="${file:0:10} ${file:11:2}:${file:13:2}"
+        convert -respect-parenthesis \( "$dir$file" \)  \
+        \( -clone 0 -background none -pointsize 36 -font arial -fill white label:"$timestamp" \
+            -gravity north -compose over -composite \) \
+        \( -clone 0 -background none -pointsize 36 -font arial -fill black label:"$timestamp" \
+            -gravity north -compose over -composite \) \
+        \( -clone 0 -threshold 30% \) \
+        -delete 0 -compose over -composite /home/weewx/public_html/images/north/latest.jpg
+        rm $dir$file
+    done
