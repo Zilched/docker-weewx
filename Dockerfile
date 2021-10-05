@@ -11,7 +11,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # debian, ubuntu, mint, raspbian
 # for systems that do not have python 3 installed (for example, ubuntu 18.04 and later):
-RUN apt-get install -y python3 python3-pip python3-configobj python3-serial python3-mysqldb python3-usb default-mysql-client sqlite3 curl rsync ssh tzdata wget gftp syslog-ng xtide xtide-data
+RUN apt-get install -y python3 python3-pip python3-configobj python3-serial python3-mysqldb python3-usb default-mysql-client sqlite3 curl rsync ssh tzdata wget gftp syslog-ng xtide xtide-data inotify-tools imagemagick
 RUN pip3 install Cheetah3 Pillow-PIL pyephem setuptools requests dnspython paho-mqtt configobj
 RUN ln -f -s /usr/bin/python3 /usr/bin/python
 RUN mkdir /var/log/weewx
@@ -24,9 +24,16 @@ RUN mkdir /home/weewx/tmp
 RUN mkdir /home/weewx/public_html
 
 RUN mkdir -p /etc/service/weewx
+RUN mkdir -p /etc/service/convertwest
+RUN mkdir -p /etc/service/convertnorth
 
 ADD bin/run /etc/service/weewx/
+ADD bin/convertwest/run /etc/service/convertwest/
+ADD bin/convertnorth/run /etc/service/convertnorth/
+
 RUN chmod 755 /etc/service/weewx/run
+RUN chmod 755 /etc/service/convertwest/run
+RUN chmod 755 /etc/service/convertnorth/run
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
